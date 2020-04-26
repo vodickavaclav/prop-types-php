@@ -1,21 +1,21 @@
 <?php
-namespace Prezly\PropTypes\Checkers;
+
+namespace Prezly\PropTypes\Checker;
 
 use InvalidArgumentException;
-use Prezly\PropTypes\Exceptions\PropTypeException;
+use Prezly\PropTypes\Exception\PropTypeException;
 
-final class UnionTypeChecker implements TypeChecker
-{
-    /** @var \Prezly\PropTypes\Checkers\TypeChecker[] */
-    private $checkers;
+final class UnionType implements TypeChecker {
+
+    /** @var TypeChecker[] */
+    private array $checkers;
 
     /**
-     * @param \Prezly\PropTypes\Checkers\TypeChecker[] $checkers
+     * @param TypeChecker[] $checkers
      */
-    public function __construct(array $checkers)
-    {
+    public function __construct(array $checkers) {
         foreach ($checkers as $key => $checker) {
-            if (! $checker instanceof TypeChecker) {
+            if (!$checker instanceof TypeChecker) {
                 throw new InvalidArgumentException(sprintf(
                     'Invalid argument supplied to oneOfType(). Expected an array of %s instances, but received %s at key `%s`.',
                     TypeChecker::class,
@@ -28,13 +28,12 @@ final class UnionTypeChecker implements TypeChecker
     }
 
     /**
-     * @param array $props
+     * @param array  $props
      * @param string $prop_name
      * @param string $prop_full_name
-     * @return \Prezly\PropTypes\Exceptions\PropTypeException|null Exception is returned if prop type is invalid
+     * @return PropTypeException|null Exception is returned if prop type is invalid
      */
-    public function validate(array $props, string $prop_name, string $prop_full_name): ?PropTypeException
-    {
+    public function validate(array $props, string $prop_name, string $prop_full_name): ?PropTypeException {
         foreach ($this->checkers as $checker) {
             $checker_result = $checker->validate($props, $prop_name, $prop_full_name);
             if ($checker_result === null) {

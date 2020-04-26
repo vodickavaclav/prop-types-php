@@ -21,7 +21,7 @@ PropTypes was originally exposed as part of the React core module, and is common
 ```php
 <?php
 
-use Prezly\PropTypes\Exceptions\PropTypeException;
+use Prezly\PropTypes\Exception\PropTypeException;
 use Prezly\PropTypes\PropTypes;
 
 function myFunction(array $options): void
@@ -122,5 +122,5 @@ function myFunction(array $options): void
    ```php
    [
       'title' => PropTypes::string()->isNullable(),
-   ]
+   ];
    ```

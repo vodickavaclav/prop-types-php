@@ -1,20 +1,18 @@
 <?php
-namespace Prezly\PropTypes\Checkers;
 
-use Prezly\PropTypes\Exceptions\PropTypeException;
+namespace Prezly\PropTypes\Checker;
 
-final class PrimitiveTypeChecker implements TypeChecker
-{
-    /** @var string */
-    private $expected_type;
+use Prezly\PropTypes\Exception\PropTypeException;
 
-    public function __construct(string $expected_type)
-    {
+final class PrimitiveType implements TypeChecker {
+
+    private string $expected_type;
+
+    public function __construct(string $expected_type) {
         $this->expected_type = $expected_type;
     }
 
-    public function validate(array $props, string $prop_name, string $prop_full_name): ?PropTypeException
-    {
+    public function validate(array $props, string $prop_name, string $prop_full_name): ?PropTypeException {
         $prop_value = $props[$prop_name];
         $prop_type = gettype($prop_value);
 

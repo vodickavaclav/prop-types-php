@@ -1,30 +1,29 @@
 <?php
-namespace Prezly\PropTypes\Checkers;
 
-use Prezly\PropTypes\Exceptions\PropTypeException;
+namespace Prezly\PropTypes\Checker;
+
+use Prezly\PropTypes\Exception\PropTypeException;
 use stdClass;
+use voku\helper\UTF8;
 
-final class EnumTypeChecker implements TypeChecker
-{
-    /** @var array */
-    private $expected_values;
+final class EnumType implements TypeChecker {
+
+    private array $expected_values;
 
     /**
      * @param mixed[] $expected_values
      */
-    public function __construct(array $expected_values)
-    {
+    public function __construct(array $expected_values) {
         $this->expected_values = $expected_values;
     }
 
     /**
-     * @param array $props
+     * @param array  $props
      * @param string $prop_name
      * @param string $prop_full_name
-     * @return \Prezly\PropTypes\Exceptions\PropTypeException|null Exception is returned if prop type is invalid
+     * @return PropTypeException|null Exception is returned if prop type is invalid
      */
-    public function validate(array $props, string $prop_name, string $prop_full_name): ?PropTypeException
-    {
+    public function validate(array $props, string $prop_name, string $prop_full_name): ?PropTypeException {
         $prop_value = $props[$prop_name];
 
         foreach ($this->expected_values as $i => $expected_value) {
@@ -46,8 +45,7 @@ final class EnumTypeChecker implements TypeChecker
      * @param mixed $value
      * @return string
      */
-    private static function stringifyValue($value): string
-    {
+    private static function stringifyValue($value): string {
         if (is_null($value)) {
             return 'null';
         }
@@ -57,7 +55,7 @@ final class EnumTypeChecker implements TypeChecker
         }
 
         if (is_int($value) || is_float($value)) {
-            return (string) $value;
+            return (string)$value;
         }
 
         if (is_resource($value)) {
@@ -65,8 +63,8 @@ final class EnumTypeChecker implements TypeChecker
         }
 
         if (is_string($value)) {
-            if (mb_strlen($value) > 100) {
-                return sprintf('"%s..." (%s characters)', mb_substr($value, 0, 80), mb_strlen($value));
+            if (UTF8::strlen($value) > 100) {
+                return sprintf('"%s..." (%s characters)', UTF8::substr($value, 0, 80), UTF8::strlen($value));
             }
             return sprintf('"%s"', $value);
         }
@@ -79,14 +77,13 @@ final class EnumTypeChecker implements TypeChecker
             return self::stringifyInstance($value);
         }
 
-        return (string) $value;
+        return (string)$value;
     }
 
-    private static function stringifyObject(stdClass $value): string
-    {
+    private static function stringifyObject(stdClass $value): string {
         $struct = array_map(function ($value) {
             return self::stringifyValue($value);
-        }, (array) $value);
+        }, (array)$value);
 
         $pairs = [];
         foreach ($struct as $property => $value) {
@@ -99,8 +96,7 @@ final class EnumTypeChecker implements TypeChecker
      * @param object $value
      * @return string
      */
-    private static function stringifyInstance($value): string
-    {
+    private static function stringifyInstance($value): string {
         if ($value instanceof stdClass) {
             return sprintf('object %s', self::stringifyObject($value));
         }
@@ -112,8 +108,7 @@ final class EnumTypeChecker implements TypeChecker
         return "instance of {$class}";
     }
 
-    private static function stringifyArray(array $value): string
-    {
+    private static function stringifyArray(array $value): string {
         $values = array_map(function ($value) {
             return self::stringifyValue($value);
         }, $value);

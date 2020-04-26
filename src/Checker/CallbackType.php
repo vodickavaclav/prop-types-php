@@ -1,30 +1,29 @@
 <?php
-namespace Prezly\PropTypes\Checkers;
 
+namespace Prezly\PropTypes\Checker;
+
+use Closure;
 use InvalidArgumentException;
-use Prezly\PropTypes\Exceptions\PropTypeException;
+use Prezly\PropTypes\Exception\PropTypeException;
 
-final class CallbackTypeChecker implements TypeChecker
-{
-    /** @var \Closure */
-    private $callback;
+final class CallbackType implements TypeChecker {
+
+    private Closure $callback;
 
     /**
      * @param callable $callback (array $props, string $prop_name, string $prop_full_name): ?PropTypeException()
      */
-    public function __construct(callable $callback)
-    {
+    public function __construct(callable $callback) {
         $this->callback = $callback;
     }
 
     /**
-     * @param array $props
+     * @param array  $props
      * @param string $prop_name
      * @param string $prop_full_name
-     * @return \Prezly\PropTypes\Exceptions\PropTypeException|null Exception is returned if prop type is invalid
+     * @return PropTypeException|null Exception is returned if prop type is invalid
      */
-    public function validate(array $props, string $prop_name, string $prop_full_name): ?PropTypeException
-    {
+    public function validate(array $props, string $prop_name, string $prop_full_name): ?PropTypeException {
         try {
             $error = ($this->callback)($props, $prop_name, $prop_full_name);
         } catch (PropTypeException $exception) {

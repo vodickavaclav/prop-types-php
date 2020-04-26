@@ -1,40 +1,30 @@
 <?php
+
 namespace Prezly\PropTypes;
 
 use InvalidArgumentException;
-use Prezly\PropTypes\Checkers\AnyTypeChecker;
-use Prezly\PropTypes\Checkers\ArrayOfTypeChecker;
-use Prezly\PropTypes\Checkers\CallbackTypeChecker;
-use Prezly\PropTypes\Checkers\ChainableTypeChecker;
-use Prezly\PropTypes\Checkers\EnumTypeChecker;
-use Prezly\PropTypes\Checkers\InstanceTypeChecker;
-use Prezly\PropTypes\Checkers\PrimitiveTypeChecker;
-use Prezly\PropTypes\Checkers\ShapeTypeChecker;
-use Prezly\PropTypes\Checkers\StrictShapeTypeChecker;
-use Prezly\PropTypes\Checkers\TypeChecker;
-use Prezly\PropTypes\Checkers\UnionTypeChecker;
-use Prezly\PropTypes\Exceptions\PropTypeException;
+use Prezly\PropTypes\Checker;
+use Prezly\PropTypes\Checker\ChainableType;
+use Prezly\PropTypes\Checker\TypeChecker;
+use Prezly\PropTypes\Exception\PropTypeException;
 
-final class PropTypes
-{
-    private const DEFAULT_OPTIONS = [
-        'allow_extra_properties' => false,
-    ];
+final class PropTypes {
+
+    private const DEFAULT_OPTIONS = ['allow_extra_properties' => false];
 
     /**
-     * @param \Prezly\PropTypes\Checkers\TypeChecker[] $specs
-     * @param array $props
-     * @param array $options
+     * @param TypeChecker[] $specs
+     * @param array         $props
+     * @param array         $options
      *        - bool "allow_extra_properties" (default: false)
-     * @throws \Prezly\PropTypes\Exceptions\PropTypeException When a prop-type validation fails.
-     * @throws \InvalidArgumentException When invalid specs configuration was given.
+     * @throws PropTypeException When a prop-type validation fails.
+     * @throws InvalidArgumentException When invalid specs configuration was given.
      */
-    public static function check(array $specs, array $props, array $options = []): void
-    {
+    public static function check(array $specs, array $props, array $options = []): void {
         $options = array_merge(self::DEFAULT_OPTIONS, $options);
 
         foreach ($specs as $key => $checker) {
-            if (! $checker instanceof TypeChecker) {
+            if (!$checker instanceof TypeChecker) {
                 throw new InvalidArgumentException(sprintf(
                     'Invalid argument supplied to %s(). Expected an associative array of `%s` instances, but received `%s` at key `%s`.',
                     __FUNCTION__,
@@ -45,9 +35,9 @@ final class PropTypes
             }
         }
 
-        if (! $options['allow_extra_properties']) {
+        if (!$options['allow_extra_properties']) {
             foreach (array_keys($props) as $prop_name) {
-                if (! isset($specs[$prop_name])) {
+                if (!isset($specs[$prop_name])) {
                     throw new PropTypeException(
                         $prop_name,
                         "Unexpected extra property `{$prop_name}` supplied."
@@ -64,73 +54,59 @@ final class PropTypes
         }
     }
 
-    public static function any(): ChainableTypeChecker
-    {
-        return new ChainableTypeChecker(new AnyTypeChecker());
+    public static function any(): ChainableType {
+        return new ChainableType(new Checker\AnyType());
     }
 
-    public static function array(): ChainableTypeChecker
-    {
-        return new ChainableTypeChecker(new PrimitiveTypeChecker('array'));
+    public static function array(): ChainableType {
+        return new ChainableType(new Checker\PrimitiveType('array'));
     }
 
-    public static function arrayOf(TypeChecker $checker): ChainableTypeChecker
-    {
-        return new ChainableTypeChecker(new ArrayOfTypeChecker($checker));
+    public static function arrayOf(TypeChecker $checker): ChainableType {
+        return new ChainableType(new Checker\ArrayOfType($checker));
     }
 
-    public static function bool(): ChainableTypeChecker
-    {
-        return new ChainableTypeChecker(new PrimitiveTypeChecker('boolean'));
+    public static function bool(): ChainableType {
+        return new ChainableType(new Checker\PrimitiveType('boolean'));
     }
 
-    public static function callback(callable $callback): ChainableTypeChecker
-    {
-        return new ChainableTypeChecker(new CallbackTypeChecker($callback));
+    public static function callback(callable $callback): ChainableType {
+        return new ChainableType(new Checker\CallbackType($callback));
     }
 
-    public static function exact(array $shape): ChainableTypeChecker
-    {
-        return new ChainableTypeChecker(new StrictShapeTypeChecker($shape));
+    public static function exact(array $shape): ChainableType {
+        return new ChainableType(new Checker\StrictShapeType($shape));
     }
 
-    public static function instanceOf(string $expected_class): ChainableTypeChecker
-    {
-        return new ChainableTypeChecker(new InstanceTypeChecker($expected_class));
+    public static function instanceOf(string $expected_class): ChainableType {
+        return new ChainableType(new Checker\InstanceType($expected_class));
     }
 
-    public static function int(): ChainableTypeChecker
-    {
-        return new ChainableTypeChecker(new PrimitiveTypeChecker('integer'));
+    public static function int(): ChainableType {
+        return new ChainableType(new Checker\PrimitiveType('integer'));
     }
 
-    public static function float(): ChainableTypeChecker
-    {
-        return new ChainableTypeChecker(new PrimitiveTypeChecker('double'));
+    public static function float(): ChainableType {
+        return new ChainableType(new Checker\PrimitiveType('double'));
     }
 
-    public static function object(): ChainableTypeChecker
-    {
-        return new ChainableTypeChecker(new PrimitiveTypeChecker('object'));
+    public static function object(): ChainableType {
+        return new ChainableType(new Checker\PrimitiveType('object'));
     }
 
-    public static function oneOfType(array $checkers): ChainableTypeChecker
-    {
-        return new ChainableTypeChecker(new UnionTypeChecker($checkers));
+    public static function oneOfType(array $checkers): ChainableType {
+        return new ChainableType(new Checker\UnionType($checkers));
     }
 
-    public static function oneOf(array $expected_values): ChainableTypeChecker
-    {
-        return new ChainableTypeChecker(new EnumTypeChecker($expected_values));
+    public static function oneOf(array $expected_values): ChainableType {
+        return new ChainableType(new Checker\EnumType($expected_values));
     }
 
-    public static function shape(array $shape): ChainableTypeChecker
-    {
-        return new ChainableTypeChecker(new ShapeTypeChecker($shape));
+    public static function shape(array $shape): ChainableType {
+        return new ChainableType(new Checker\ShapeType($shape));
     }
 
-    public static function string(): ChainableTypeChecker
-    {
-        return new ChainableTypeChecker(new PrimitiveTypeChecker('string'));
+    public static function string(): ChainableType {
+        return new ChainableType(new Checker\PrimitiveType('string'));
     }
 }
