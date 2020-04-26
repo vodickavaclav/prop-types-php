@@ -1,6 +1,6 @@
 <?php
 
-namespace Prezly\PropTypes\Exception;
+namespace Guym4c\PropTypes\Exception;
 
 use InvalidArgumentException;
 use Throwable;

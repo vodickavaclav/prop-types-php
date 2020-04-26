@@ -1,12 +1,12 @@
 <?php
 
-namespace Prezly\PropTypes;
+namespace Guym4c\PropTypes;
 
 use InvalidArgumentException;
-use Prezly\PropTypes\Checker;
-use Prezly\PropTypes\Checker\ChainableType;
-use Prezly\PropTypes\Checker\TypeChecker;
-use Prezly\PropTypes\Exception\PropTypeException;
+use Guym4c\PropTypes\Checker;
+use Guym4c\PropTypes\Checker\ChainableType;
+use Guym4c\PropTypes\Checker\TypeChecker;
+use Guym4c\PropTypes\Exception\PropTypeException;
 
 final class PropTypes {
 

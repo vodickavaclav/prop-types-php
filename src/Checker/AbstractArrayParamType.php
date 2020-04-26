@@ -1,6 +1,6 @@
 <?php
 
-namespace Prezly\PropTypes\Checker;
+namespace Guym4c\PropTypes\Checker;
 
 use InvalidArgumentException;
 

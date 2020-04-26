@@ -1,10 +1,10 @@
 <?php
 
-namespace Prezly\PropTypes\Checker;
+namespace Guym4c\PropTypes\Checker;
 
 use Closure;
 use InvalidArgumentException;
-use Prezly\PropTypes\Exception\PropTypeException;
+use Guym4c\PropTypes\Exception\PropTypeException;
 
 final class CallbackType extends TypeChecker {
 

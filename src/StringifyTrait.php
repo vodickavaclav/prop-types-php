@@ -1,6 +1,6 @@
 <?php
 
-namespace Prezly\PropTypes;
+namespace Guym4c\PropTypes;
 
 use stdClass;
 use voku\helper\UTF8;

@@ -1,6 +1,6 @@
 # PropTypes.php
 
-**A fork of [prezly/prop-types-php](https://github.com/prezly/prop-types-php)**
+**A fork of [prezly/prop-types-php](https://github.com/prezly/prop-types-php). Please consider using the original package**
 
 Complete PHP port of [React PropTypes](https://github.com/facebook/prop-types).
 
@@ -14,6 +14,16 @@ You can use prop-types to document the intended types of properties passed into 
 composer require prezly/prop-types
 ```
 
+## Credit
+This is a fork of [prezly/prop-types-php](https://github.com/prezly/prop-types-php).
+
+This package adds:
+
+   * Iterable proptype
+   * Callable proptype
+   * Number float/int shorthand proptype
+   * PHP7.4
+
 ## Usage
 
 PropTypes was originally exposed as part of the React core module, and is commonly used with React components. We've tried to bring the familiarity of React PropTypes into PHP. Here is an example of using PropTypes with a PHP function, which also documents the different validators provided.
@@ -21,8 +31,8 @@ PropTypes was originally exposed as part of the React core module, and is common
 You can call `PropTypes::check()` to validate an array of props, providing it with a props spec as below:
 
 ```php
-use Prezly\PropTypes\Exception\PropTypeException;
-use Prezly\PropTypes\PropTypes;
+use Guym4c\PropTypes\Exception\PropTypeException;
+use Guym4c\PropTypes\PropTypes;
 
 [
     // You can declare that a prop has a specific type.
@@ -49,7 +59,7 @@ use Prezly\PropTypes\PropTypes;
     ]),
 
     // Float or int shorthand
-    'optionalFloat' => PropTypes::number(),
+    'optionalNumber' => PropTypes::number(),
 
     // An array of a certain type
     'optionalArrayOf' => PropTypes::arrayOf(PropTypes::int()),

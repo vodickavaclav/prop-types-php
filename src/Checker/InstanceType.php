@@ -1,8 +1,8 @@
 <?php
 
-namespace Prezly\PropTypes\Checker;
+namespace Guym4c\PropTypes\Checker;
 
-use Prezly\PropTypes\Exception\PropTypeException;
+use Guym4c\PropTypes\Exception\PropTypeException;
 
 final class InstanceType extends TypeChecker {
 
