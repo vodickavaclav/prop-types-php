@@ -2,70 +2,42 @@
 
 namespace Prezly\PropTypes\Checker;
 
-use InvalidArgumentException;
 use Prezly\PropTypes\Exception\PropTypeException;
 
-final class StrictShapeType implements TypeChecker {
-
-    /** @var TypeChecker[] */
-    private array $shape_types;
+final class StrictShapeType extends ShapeType {
 
     /**
-     * @param TypeChecker[] $shape_types
+     * @{@inheritDoc}
      */
-    public function __construct(array $shape_types) {
-        foreach ($shape_types as $key => $checker) {
-            if (!$checker instanceof TypeChecker) {
-                throw new InvalidArgumentException(sprintf(
-                    'Invalid argument supplied to exact(). Expected an associative array of %s instances, but received %s at key "%s".',
-                    TypeChecker::class,
-                    is_object($checker) ? 'instance of ' . get_class($checker) : gettype($checker),
-                    $key
-                ));
-            }
+    public function validate(array $props, string $propName, string $propFullName): ?PropTypeException {
+        $propValue = $props[$propName];
+
+        $error = self::checkForArrayAsProp($propValue, $propName, $propFullName);
+
+        if (!empty($error)) {
+            return $error;
         }
 
-        $this->shape_types = $shape_types;
-    }
-
-    /**
-     * @param array  $props
-     * @param string $prop_name
-     * @param string $prop_full_name
-     * @return PropTypeException|null Exception is returned if prop type is invalid
-     */
-    public function validate(array $props, string $prop_name, string $prop_full_name): ?PropTypeException {
-        $prop_value = $props[$prop_name];
-
-        if (!is_array($prop_value)) {
-            $prop_type = gettype($prop_value);
-
-            return new PropTypeException(
-                $prop_name,
-                "Invalid property `{$prop_full_name}` of type `{$prop_type}` supplied, expected an associative array."
-            );
-        }
-
-        $all_keys = array_unique(
+        $combinedKeys = array_unique(
             array_merge(
-                array_keys($prop_value),
-                array_keys($this->shape_types)
+                array_keys($propValue),
+                array_keys($this->types)
             )
         );
-        foreach ($all_keys as $key) {
+        foreach ($combinedKeys as $key) {
             $checker = $this->shape_types[$key] ?? null;
 
             if (empty($checker)) {
                 return new PropTypeException(
-                    $prop_name,
-                    "Invalid property `{$prop_full_name}` with unexpected key `${key}` supplied."
+                    $propName,
+                    "Invalid property `{$propFullName}` with unexpected key `${key}` supplied."
                 );
             }
 
-            $error = $checker->validate($prop_value, (string)$key, "{$prop_full_name}.{$key}");
+            $error = $checker->validate($propValue, (string)$key, "{$propFullName}.{$key}");
 
             if ($error !== null) {
-                return new PropTypeException($prop_name, $error->getMessage(), $error);
+                return new PropTypeException($propName, $error->getMessage(), $error);
             }
         }
 

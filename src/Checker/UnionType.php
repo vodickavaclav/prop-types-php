@@ -2,48 +2,27 @@
 
 namespace Prezly\PropTypes\Checker;
 
-use InvalidArgumentException;
 use Prezly\PropTypes\Exception\PropTypeException;
 
-final class UnionType implements TypeChecker {
-
-    /** @var TypeChecker[] */
-    private array $checkers;
-
-    /**
-     * @param TypeChecker[] $checkers
-     */
-    public function __construct(array $checkers) {
-        foreach ($checkers as $key => $checker) {
-            if (!$checker instanceof TypeChecker) {
-                throw new InvalidArgumentException(sprintf(
-                    'Invalid argument supplied to oneOfType(). Expected an array of %s instances, but received %s at key `%s`.',
-                    TypeChecker::class,
-                    is_object($checker) ? 'instance of ' . get_class($checker) : gettype($checker),
-                    $key
-                ));
-            }
-        }
-        $this->checkers = $checkers;
-    }
+final class UnionType extends AbstractArrayParamType {
 
     /**
      * @param array  $props
-     * @param string $prop_name
-     * @param string $prop_full_name
+     * @param string $propName
+     * @param string $propFullName
      * @return PropTypeException|null Exception is returned if prop type is invalid
      */
-    public function validate(array $props, string $prop_name, string $prop_full_name): ?PropTypeException {
-        foreach ($this->checkers as $checker) {
-            $checker_result = $checker->validate($props, $prop_name, $prop_full_name);
+    public function validate(array $props, string $propName, string $propFullName): ?PropTypeException {
+        foreach ($this->types as $checker) {
+            $checker_result = $checker->validate($props, $propName, $propFullName);
             if ($checker_result === null) {
                 return null;
             }
         }
 
         return new PropTypeException(
-            $prop_name,
-            "Invalid `{$prop_full_name}` supplied, none of types matched."
+            $propName,
+            "Invalid `{$propFullName}` supplied, none of types matched."
         );
     }
 }

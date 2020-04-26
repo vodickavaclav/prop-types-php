@@ -4,12 +4,19 @@ namespace Prezly\PropTypes\Checker;
 
 use Prezly\PropTypes\Exception\PropTypeException;
 
-interface TypeChecker {
+abstract class TypeChecker {
+
     /**
      * @param array  $props
-     * @param string $prop_name
-     * @param string $prop_full_name
+     * @param string $propName
+     * @param string $propFullName
      * @return PropTypeException|null Exception is returned if prop type is invalid
      */
-    public function validate(array $props, string $prop_name, string $prop_full_name): ?PropTypeException;
+    abstract public function validate(array $props, string $propName, string $propFullName): ?PropTypeException;
+
+    protected static function getActualPropType($prop): string {
+        return is_object($prop)
+            ? get_class($prop)
+            : gettype($prop);
+    }
 }

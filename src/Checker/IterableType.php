@@ -4,22 +4,17 @@ namespace Prezly\PropTypes\Checker;
 
 use Prezly\PropTypes\Exception\PropTypeException;
 
-final class PrimitiveType extends TypeChecker {
-
-    private string $expectedType;
-
-    public function __construct(string $expectedType) {
-        $this->expectedType = $expectedType;
-    }
+class IterableType extends TypeChecker {
 
     public function validate(array $props, string $propName, string $propFullName): ?PropTypeException {
         $propValue = $props[$propName];
 
-        if (gettype($propValue) !== $this->expectedType) {
+        if (!is_iterable($propValue)) {
             return PropTypeException::fromSimpleInvalidType(
-                $propName, $propFullName, $this->expectedType, self::getActualPropType($propValue)
+                $propName, $propFullName, 'iterable', self::getActualPropType($propValue)
             );
         }
+
         return null;
     }
 }

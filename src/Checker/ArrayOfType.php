@@ -4,7 +4,7 @@ namespace Prezly\PropTypes\Checker;
 
 use Prezly\PropTypes\Exception\PropTypeException;
 
-final class ArrayOfType implements TypeChecker {
+final class ArrayOfType extends TypeChecker {
 
     private TypeChecker $checker;
 
@@ -14,24 +14,24 @@ final class ArrayOfType implements TypeChecker {
 
     /**
      * @param array  $props
-     * @param string $prop_name
-     * @param string $prop_full_name
+     * @param string $propName
+     * @param string $propFullName
      * @return PropTypeException|null Exception is returned if prop type is invalid
      */
-    public function validate(array $props, string $prop_name, string $prop_full_name): ?PropTypeException {
-        $prop_value = $props[$prop_name];
+    public function validate(array $props, string $propName, string $propFullName): ?PropTypeException {
+        $propValue = $props[$propName];
 
-        if (!is_array($prop_value)) {
-            $prop_type = gettype($prop_value);
+        if (!is_array($propValue)) {
+            $prop_type = gettype($propValue);
 
             return new PropTypeException(
-                $prop_name,
-                "Invalid property `{$prop_full_name}` of type `{$prop_type}` supplied, expected an array."
+                $propName,
+                "Invalid property `{$propFullName}` of type `{$prop_type}` supplied, expected an array."
             );
         }
 
-        foreach (array_keys($prop_value) as $index) {
-            $error = $this->checker->validate($prop_value, (string)$index, "{$prop_full_name}[{$index}]");
+        foreach (array_keys($propValue) as $index) {
+            $error = $this->checker->validate($propValue, (string)$index, "{$propFullName}[{$index}]");
             if ($error !== null) {
                 return $error;
             }

@@ -4,57 +4,57 @@ namespace Prezly\PropTypes\Checker;
 
 use Prezly\PropTypes\Exception\PropTypeException;
 
-final class ChainableType implements TypeChecker {
+final class ChainableType extends TypeChecker {
 
     private TypeChecker $checker;
 
+    private bool $isRequired;
 
-    private bool $is_required;
+    private bool $isNullable;
 
-    /** @var bool */
-    private bool $is_nullable;
-
-    public function __construct(TypeChecker $checker, bool $is_required = false, bool $is_nullable = false) {
+    public function __construct(TypeChecker $checker, bool $isRequired = false, bool $isNullable = false) {
         $this->checker = $checker;
-        $this->is_required = $is_required;
-        $this->is_nullable = $is_nullable;
+        $this->isRequired = $isRequired;
+        $this->isNullable = $isNullable;
     }
 
     /**
      * @param array  $props
-     * @param string $prop_name
-     * @param string $prop_full_name
+     * @param string $propName
+     * @param string $propFullName
      * @return PropTypeException|null Exception is returned if prop type is invalid
      */
-    public function validate(array $props, string $prop_name, string $prop_full_name): ?PropTypeException {
-        if (!array_key_exists($prop_name, $props)) {
-            if ($this->is_required) {
+    public function validate(array $props, string $propName, string $propFullName): ?PropTypeException {
+        if (!array_key_exists($propName, $props)) {
+            if ($this->isRequired) {
                 return new PropTypeException(
-                    $prop_name,
-                    "The property `{$prop_full_name}` is marked as required, but it's not defined."
+                    $propName,
+                    "The property `{$propFullName}` is marked as required, but is not defined."
                 );
             }
             return null;
         }
 
-        if ($props[$prop_name] === null) {
-            if (!$this->is_nullable) {
+        if ($props[$propName] === null) {
+            if (!$this->isNullable) {
                 return new PropTypeException(
-                    $prop_name,
-                    "The property `{$prop_full_name}` is marked as not-null, but its value is `null`."
+                    $propName,
+                    "The property `{$propFullName}` is marked as not-null, but its value is `null`."
                 );
             }
             return null;
         }
 
-        return $this->checker->validate($props, $prop_name, $prop_full_name);
+        return $this->checker->validate($props, $propName, $propFullName);
     }
 
     public function isRequired(): self {
-        return new self($this->checker, true, $this->is_nullable);
+        $this->isRequired = true;
+        return $this;
     }
 
     public function isNullable(): self {
-        return new self($this->checker, $this->is_required, true);
+        $this->isNullable = true;
+        return $this;
     }
 }

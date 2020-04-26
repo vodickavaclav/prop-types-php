@@ -4,28 +4,29 @@ namespace Prezly\PropTypes\Checker;
 
 use Prezly\PropTypes\Exception\PropTypeException;
 
-final class InstanceType implements TypeChecker {
+final class InstanceType extends TypeChecker {
 
-    private string $expected_class;
+    private string $expectedClass;
 
-    public function __construct(string $expected_class) {
-        $this->expected_class = $expected_class;
+    public function __construct(string $expectedClass) {
+        $this->expectedClass = $expectedClass;
     }
 
     /**
      * @param array  $props
-     * @param string $prop_name
-     * @param string $prop_full_name
+     * @param string $propName
+     * @param string $propFullName
      * @return PropTypeException|null Exception is returned if prop type is invalid
      */
-    public function validate(array $props, string $prop_name, string $prop_full_name): ?PropTypeException {
-        $prop_value = $props[$prop_name];
+    public function validate(array $props, string $propName, string $propFullName): ?PropTypeException {
+        $propValue = $props[$propName];
 
-        if (!$prop_value instanceof $this->expected_class) {
-            $actual_prop_type = is_object($prop_value) ? get_class($prop_value) : gettype($prop_value);
+        if (!$propValue instanceof $this->expectedClass) {
             return new PropTypeException(
-                $prop_name,
-                "Invalid property `{$prop_full_name}` of type `{$actual_prop_type}` supplied, expected instance of `{$this->expected_class}`."
+                $propName,
+                sprintf(
+                    "Invalid property `{$propFullName}` of type `%s` supplied, expected instance of `{$this->expectedClass}`.",
+                    self::getActualPropType($propValue))
             );
         }
 

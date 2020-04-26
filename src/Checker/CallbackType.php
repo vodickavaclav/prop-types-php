@@ -6,7 +6,7 @@ use Closure;
 use InvalidArgumentException;
 use Prezly\PropTypes\Exception\PropTypeException;
 
-final class CallbackType implements TypeChecker {
+final class CallbackType extends TypeChecker {
 
     private Closure $callback;
 
@@ -19,17 +19,17 @@ final class CallbackType implements TypeChecker {
 
     /**
      * @param array  $props
-     * @param string $prop_name
-     * @param string $prop_full_name
+     * @param string $propName
+     * @param string $propFullName
      * @return PropTypeException|null Exception is returned if prop type is invalid
      */
-    public function validate(array $props, string $prop_name, string $prop_full_name): ?PropTypeException {
+    public function validate(array $props, string $propName, string $propFullName): ?PropTypeException {
         try {
-            $error = ($this->callback)($props, $prop_name, $prop_full_name);
+            $error = ($this->callback)($props, $propName, $propFullName);
         } catch (PropTypeException $exception) {
             $error = $exception;
         } catch (InvalidArgumentException $exception) {
-            $error = new PropTypeException($prop_name, $exception->getMessage(), $exception);
+            $error = new PropTypeException($propName, $exception->getMessage(), $exception);
         }
 
         if ($error === null) {
@@ -42,7 +42,7 @@ final class CallbackType implements TypeChecker {
 
         throw new InvalidArgumentException(sprintf(
             'A callback() checker callback is allowed to return either `null` or `PropTypeException`, but `%s` returned instead.',
-            is_object($error) ? 'instance of ' . get_class($error) : gettype($error)
+            self::getActualPropType($error)
         ));
     }
 }

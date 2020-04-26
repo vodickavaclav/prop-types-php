@@ -70,6 +70,10 @@ final class PropTypes {
         return new ChainableType(new Checker\PrimitiveType('boolean'));
     }
 
+    public static function callable(): ChainableType {
+        return new ChainableType(new Checker\CallableType());
+    }
+
     public static function callback(callable $callback): ChainableType {
         return new ChainableType(new Checker\CallbackType($callback));
     }
@@ -86,8 +90,16 @@ final class PropTypes {
         return new ChainableType(new Checker\PrimitiveType('integer'));
     }
 
+    public static function iterable(): ChainableType {
+        return new ChainableType(new Checker\IterableType());
+    }
+
     public static function float(): ChainableType {
         return new ChainableType(new Checker\PrimitiveType('double'));
+    }
+
+    public static function number(): ChainableType {
+        return self::oneOfType([self::int(), self::float()]);
     }
 
     public static function object(): ChainableType {
