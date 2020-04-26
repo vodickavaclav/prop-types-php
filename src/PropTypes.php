@@ -8,7 +8,7 @@ use Guym4c\PropTypes\Checker\ChainableType;
 use Guym4c\PropTypes\Checker\TypeChecker;
 use Guym4c\PropTypes\Exception\PropTypeException;
 
-final class PropTypes {
+class PropTypes {
 
     private const DEFAULT_OPTIONS = ['allow_extra_properties' => false];
 

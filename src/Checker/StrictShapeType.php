@@ -25,7 +25,7 @@ final class StrictShapeType extends ShapeType {
             )
         );
         foreach ($combinedKeys as $key) {
-            $checker = $this->shape_types[$key] ?? null;
+            $checker = $this->types[$key] ?? null;
 
             if (empty($checker)) {
                 return new PropTypeException(
