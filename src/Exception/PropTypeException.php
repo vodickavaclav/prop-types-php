@@ -9,7 +9,7 @@ class PropTypeException extends InvalidArgumentException {
 
     private string $prop_name;
 
-    public function __construct(string $propName, string $message, Throwable $previous = null) {
+    public function __construct(string $propName, string $message, ?Throwable $previous = null) {
         parent::__construct($message, 0, $previous);
         $this->prop_name = $propName;
     }
